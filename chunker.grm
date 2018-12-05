@@ -15,3 +15,9 @@ export Brackets2 = CDRewrite[BracketNP, "", "", SigmaStar, 'sim', 'obl'];
 export BracketTransform = CDRewrite[BracketNP @ MakeNmod, "", "", SigmaStar, 'sim', 'obl'];
 export BracketResults = Optimize[Project["Quant" "Noun"+ "Verb" @ BracketTransform, 'output']];
 export CPM = "":BracketResults;
+
+# Extra Credit
+export NountoNmod = Optimize[SigmaStar ("Noun":"Nmod")* SigmaStar];
+export NounFinal = SigmaStar - ((SigmaStar - "Noun") "Noun" ("Nmod"|"Noun")+);
+export NmodNotFinal = SigmaStar - ((SigmaStar - "Nmod") "Nmod" (SigmaStar - (("Nmod"|"Noun") SigmaStar)));
+export TransformNP2 = NP @ NountoNmod @ NounFinal @ NmodNotFinal;
