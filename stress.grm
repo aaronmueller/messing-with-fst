@@ -1,16 +1,29 @@
 import 'byte.grm' as bytelib;   # copy this file from grammars/byte.grm
 Letter = bytelib.kAlpha;        # kAlpha is defined in byte.grm
-Sigma = Letter | "'";           # alphabet also includes stress mark
-Vowel = "a" | "e" | "i" | "o" | "u" | "A" | "E" | "I" | "O" | "U";
+Sigma = Letter | "'";			# alphabet also includes stress mark
+Vowel = "a" | "e" | "i" | "o" | "u" | "A" | "E" | "I" | "O" | "U" | "^";
 Consonant = Letter - Vowel;
 Nucleus = Vowel+;
+
+WordsSigma = bytelib.kBytes;	# kAlpha with spaces and punctuation
 
 # YOU WILL FILL IN THE REST
 FirstStress = "[BOS]" Consonant*;
 PreStress = FirstStress | ((FirstStress | Consonant+) Nucleus Consonant+);
 PostStress = Nucleus Consonant+ Nucleus;
 
-export StressR123 = CDRewrite[("":"'"), PreStress, PostStress, Sigma*, 'ltr', 'obl'];
-export StressR4 = CDRewrite[("":"'"), "[BOS]" Consonant*, Nucleus Consonant* "[EOS]", Sigma*, 'ltr', 'obl'];
+export StressR123 = CDRewrite[("":"'"), PreStress, PostStress, (Sigma|"^")*, 'ltr', 'obl'];
+export StressR4 = CDRewrite[("":"'"), "[BOS]" Consonant*, Nucleus Consonant* "[EOS]", (Sigma|"^")*, 'ltr', 'obl'];
 export Stress = Optimize[StressR123 @ StressR4];
 export Backward = Invert[Stress];
+
+# the difference between WordsSigma and Sigma should include spaces and punctuation
+export StressWords = Optimize[CDRewrite[Stress, "[BOS]"|(WordsSigma-Sigma), "[EOS]"|(WordsSigma-Sigma), WordsSigma*, 'ltr', 'obl']];
+
+# Vowel = Vowel | '^';
+
+export ProcY = CDRewrite[("y"|"Y"):"^", "", "[EOS]"|Consonant, WordsSigma*, 'ltr', 'obl'];
+export UndoY = CDRewrite["^":"y", "", "", WordsSigma*];
+export Capitalize = CDRewrite["y":"Y", "[BOS]" "'"*, "", WordsSigma*, 'ltr', 'obl'];
+
+export Stressy = Optimize[ProcY @ Stress @ UndoY @ Capitalize];
