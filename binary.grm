@@ -8,4 +8,6 @@ export Triplets = (Zero* One One One One*)* Zero*;
 export NotPillars = Bit* - ((One One)*);
 export Oddlets = Optimize[Zero* (One (One One)* (Zero+ One (One One)*)*)? Zero*]; 
 
+# Below is for 9(b)
+export WFlip = ((Zero:One <2>) | (Zero <1>)) ((Zero:(Zero One) <0.5>) | (One:Zero <0.4>))+ (One <0.5>); 
 
