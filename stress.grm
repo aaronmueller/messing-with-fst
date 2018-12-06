@@ -20,10 +20,11 @@ export Backward = Invert[Stress];
 # the difference between WordsSigma and Sigma should include spaces and punctuation
 export StressWords = Optimize[CDRewrite[Stress, "[BOS]"|(WordsSigma-Sigma), "[EOS]"|(WordsSigma-Sigma), WordsSigma*, 'ltr', 'obl']];
 
-# Vowel = Vowel | '^';
-
+# preprocess vowel Ys to special caret character
 export ProcY = CDRewrite[("y"|"Y"):"^", "", "[EOS]"|Consonant, WordsSigma*, 'ltr', 'obl'];
+# convert carets back to y
 export UndoY = CDRewrite["^":"y", "", "", WordsSigma*];
+# capitalize BOS y characters
 export Capitalize = CDRewrite["y":"Y", "[BOS]" "'"*, "", WordsSigma*, 'ltr', 'obl'];
 
 export Stressy = Optimize[ProcY @ Stress @ UndoY @ Capitalize];

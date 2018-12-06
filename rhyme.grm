@@ -8,5 +8,11 @@ Pronounce = StringFile['cmudict.txt', byte, arpa];
 
 # only get everything after final stresed nucleus
 export Ending = CDRewrite[arpaSigma*:"".arpa, "".arpa, arpabet.Stressed (arpabet.Consonant* arpabet.Unstressed*)*, arpaSigma*, 'ltr', 'obl'];
+# convert to ARPAbet symbols first, then run pipeline
 export WordEnding = Optimize[Pronounce @ Ending];
+
 export InvWordEnding = Invert[WordEnding];
+
+# Extra Credit
+export EndingPlusOne = CDRewrite[arpaSigma*:"".arpa, "".arpa, arpabet.Stressed (arpabet.Consonant* arpabet.Unstressed*)*, arpaSigma*, 'ltr', 'obl'];
+
