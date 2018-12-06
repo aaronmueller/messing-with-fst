@@ -1,0 +1,12 @@
+import 'arpabet.grm' as arpabet;
+import 'byte.grm' as bytelib;
+arpa = SymbolTable['arpabet.sym'];
+asciiSigma = bytelib.kGraph | bytelib.kSpace;
+arpaSigma = arpabet.Phoneme;
+
+Pronounce = StringFile['cmudict.txt', byte, arpa];
+
+# only get everything after final stresed nucleus
+export Ending = CDRewrite[arpaSigma*:"".arpa, "".arpa, arpabet.Stressed (arpabet.Consonant* arpabet.Unstressed*)*, arpaSigma*, 'ltr', 'obl'];
+export WordEnding = Optimize[Pronounce @ Ending];
+export InvWordEnding = Invert[WordEnding];
