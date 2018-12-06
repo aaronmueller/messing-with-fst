@@ -1,9 +1,13 @@
 import 'byte.grm' as bytelib;
+import 'arpabet.grm' as arpabet;
+arpa = SymbolTable['arpabet.sym'];
 Sigma = bytelib.kGraph | bytelib.kSpace;
+arpaSigma = arpabet.Phoneme;
 
-Pronounce = StringFile['cmudict.txt'];
-StressPattern = CDRewrite[(Sigma - bytelib.kDigit) : "", "", "", Sigma*, 'sim', 'obl'];
-Dacytl = ("1" | "2") "0" "0";  
+Pronounce = StringFile['cmumini.txt', byte, arpa];
+
+export StressPattern = CDRewrite[((arpabet.Consonant:"".arpa)|(arpabet.Stressed:"AA1".arpa)|(arpabet.Unstressed:"AA0".arpa))*, "".arpa, "".arpa, arpaSigma*, 'sim', 'obl'];
+Dacytl = "AA1".arpa "AA0".arpa "AA0".arpa;  
 
 export Results = Optimize[Project[Pronounce @ StressPattern @ (Dacytl*), 'input']];
 export ListResults = "" : Results;
