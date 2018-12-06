@@ -11,3 +11,8 @@ export Oddlets = Optimize[Zero* (One (One One)* (Zero+ One (One One)*)*)? Zero*]
 # Below is for 9(b)
 export WFlip = ((Zero:One <2>) | (Zero <1>)) ((Zero:(Zero One) <0.5>) | (One:Zero <0.4>))+ (One <0.5>); 
 
+# Below is for 9(c)(i)
+export WeightedMultipath = ((Zero:One <1>) (Zero:"" <2>)) | ((Zero:"" <5>) (Zero:One <8>));
+# Below is for 9(c)(ii)
+export WeightedMultipathOpt = Optimize[WeightedMultipath]; 
+
