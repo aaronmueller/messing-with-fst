@@ -1,0 +1,21 @@
+import 'byte.grm' as bytelib;        # load a simple grammar (.grm)
+ByteSigma = (bytelib.kSpace | bytelib.kGraph);  # printable characters
+ByteSigmaStar = Optimize[ByteSigma*];
+export InvDelSpaces = CDRewrite["":" ", ByteSigma, ByteSigma, ByteSigmaStar, 'sim', 'opt'];
+
+vocab = SymbolTable['entrain.sym'];  # load model's symbol table (.sym)
+
+export ChartoLMWord = Optimize[StringFile['entrain.alpha', byte, vocab]];
+
+export AllLM = Project[ChartoLMWord, 'input'];
+
+export GoodSentence = (AllLM " ")* AllLM? ; 
+
+export Poss = InvDelSpaces @ GoodSentence; 
+
+export MyInv = (ChartoLMWord (" ".byte : "".vocab))* ChartoLMWord? ;
+
+export LM = LoadFst['entrain.fst'];  # load trigram language model (.fst)
+
+export PossOut = Poss @ MyInv; 
+
