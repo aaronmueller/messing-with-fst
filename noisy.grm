@@ -5,6 +5,9 @@ ByteSigmaStar = Optimize[ByteSigma*];
 export LM = LoadFst['entrain.fst'];  # load trigram language model (.fst)
 vocab = SymbolTable['entrain.sym'];  # load model's symbol table (.sym)
 Spell = Optimize[StringFile['entrain.alpha', vocab, byte]];
+RandomChar = bytelib.kGraph <4.54>;
+export RandomWord = Optimize[(RandomChar (RandomChar <0.1>)* ) <2.3>];
+SpellOOV = "<unk>".vocab : RandomWord;
 
 # YOU WILL FILL IN THE REST
 export Complete = CDRewrite["":ByteSigma*, "", "[EOS]", ByteSigmaStar, 'sim', 'obl'];
