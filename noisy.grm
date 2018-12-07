@@ -8,23 +8,24 @@ Spell = Optimize[StringFile['entrain.alpha', vocab, byte]];
 RandomChar = bytelib.kGraph <4.54>;
 export RandomWord = Optimize[(RandomChar (RandomChar <0.1>)* ) <2.3>];
 SpellOOV = "<unk>".vocab : RandomWord;
+SpellFull = Spell | SpellOOV;
 
 # YOU WILL FILL IN THE REST
 export Complete = CDRewrite["":ByteSigma*, "", "[EOS]", ByteSigmaStar, 'sim', 'obl'];
 # maps to all possible tokens in 'entrain'
-export AllLM = Project[Spell, 'output'];
+export AllLM = Project[SpellFull, 'output'];
 # convert from characters in 'byte' to symbols/words in language model
 export ChartoLMWord = Optimize[StringFile['entrain.alpha', byte, vocab]];
 
 export CompleteWord = Optimize[Complete @ AllLM @ ChartoLMWord @ LM];
-# export CompleteWordInContext = CDRewrite[Complete @ AllLM @ ChartoLMWord, " ".byte | "[BOS]", "[EOS]", ByteSigmaStar, 'rtl', 'obl'];
 
 export DelSpaces = CDRewrite[" ".byte:"".byte, "".byte, "".byte, ByteSigmaStar, 'sim', 'obl'];
-export SpellText = (Spell ("".vocab : " ".byte))*;
+export SpellText = (SpellFull ("".vocab : " ".byte))*;
 
 # export Generate = LM @ SpellText @ DelSpaces;
 export InvLM = Invert[LM];
 export InvSpellText = Invert[SpellText];
 export InvDelSpaces = Invert[DelSpaces];
 export RemoveExtraSpace = CDRewrite[" ".byte:"".byte, " ".byte|"[BOS]", "".byte|"[EOS]", ByteSigmaStar, 'ltr', 'obl'];
-export PrintText = SpellText @ RemoveExtraSpace;
+export PrintWithOOV = (Spell ("".vocab:" ".byte) | ("<unk>".vocab:"<unk>") ("".vocab:" ".byte))*;
+export PrintText = PrintWithOOV @ RemoveExtraSpace;
