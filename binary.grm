@@ -16,3 +16,7 @@ export WeightedMultipath = ((Zero:One <1>) (Zero:"" <2>)) | ((Zero:"" <5>) (Zero
 # Below is for 9(c)(ii)
 export WeightedMultipathOpt = Optimize[WeightedMultipath]; 
 
+# Below is for 9(d) (Extra Credit) - 
+export NoDet = ("aa" <2>)* | ("a" <5>)*;
+# export CausesHang = Determinize[RmEpsilon[NoDet]];
+
