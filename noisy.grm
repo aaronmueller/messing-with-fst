@@ -22,7 +22,7 @@ export CompleteWord = Optimize[Complete @ AllLM @ ChartoLMWord @ LM];
 export DelSpaces = CDRewrite[" ".byte:"".byte, "".byte, "".byte, ByteSigmaStar, 'sim', 'obl'];
 export SpellText = (SpellFull ("".vocab : " ".byte))*;
 
-# export Generate = LM @ SpellText @ DelSpaces;
+export Generate = LM @ SpellText @ DelSpaces;
 export InvLM = Invert[LM];
 export InvSpellText = Invert[SpellText];
 export InvDelSpaces = Invert[DelSpaces];
