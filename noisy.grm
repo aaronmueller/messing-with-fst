@@ -29,3 +29,29 @@ export InvDelSpaces = Invert[DelSpaces];
 export RemoveExtraSpace = CDRewrite[" ".byte:"".byte, " ".byte|"[BOS]", "".byte|"[EOS]", ByteSigmaStar, 'ltr', 'obl'];
 export PrintWithOOV = (Spell ("".vocab:" ".byte) | ("<unk>".vocab:"<unk>") ("".vocab:" ".byte))*;
 export PrintText = PrintWithOOV @ RemoveExtraSpace;
+
+# Below is the implementation of Telephone for Problem 12(d):
+# Usage: grmtest noisy.grm InvTelephone,InvSpellText,InvLM,PrintText
+ToOne    = "1";
+ToTwo    = "A" | "a" | "B" | "b" | "C" | "c" | "2";
+ToThree  = "D" | "d" | "E" | "e" | "F" | "f" | "3";
+ToFour   = "G" | "g" | "H" | "h" | "I" | "i" | "4";
+ToFive   = "J" | "j" | "K" | "k" | "L" | "l" | "5";
+ToSix    = "M" | "m" | "N" | "n" | "O" | "o" | "6";
+ToSeven  = "P" | "p" | "Q" | "q" | "R" | "r" | "S" | "s" | "7";
+ToEight  = "T" | "t" | "U" | "u" | "V" | "v" | "8";
+ToNine   = "W" | "w" | "X" | "x" | "Y" | "y" | "Z" | "z" | "9";
+ToZero   = "0";
+export Keypad =
+  (ToTwo:"2")   | (ToThree:"3")  | (ToFour:"4")  |
+  (ToFive:"5")  | (ToSix:"6")    | (ToSeven:"7") |
+  (ToEight:"8") | (ToNine:"9")   | (ToZero:"0")  |
+  (ToOne:"1");
+# All input that is not on the phone dial goes to epsilon
+export NotOnKeypad = ByteSigma - Project[Keypad, 'input'];
+export NonKeypad = NotOnKeypad:"";
+
+export Telephone = Optimize[(Keypad | NonKeypad) * ];
+
+export InvTelephone = Invert[Telephone];
+
